@@ -4,7 +4,7 @@ def getDockerTag(){
         }
 
 pipeline {
-    agent {label 'node01'}
+    agent {label 'node1'}
     environment{
 	    Docker_tag = getDockerTag()
         AWS_DEFAULT_REGION="us-east-1"
@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Checkout git') {
             steps {
-               git branch: 'main', url: 'https://github.com/nkarwa-panitech/DevSecOps-project.git'
+               git branch: 'main', url: 'https://github.com/simplice1608/project-2.git'
             }
         }
         
@@ -53,26 +53,26 @@ pipeline {
         
         stage('Docker Build & Push') {
             steps {
-      	        sh 'docker build -t nkarwapanitech/sprint-boot-app:$Docker_tag .'
+      	        sh 'docker build -t simplice1608/sprint-boot-app:$Docker_tag .'
                 withCredentials([string(credentialsId: 'docker', variable: 'docker_password')]) {		    
-				  sh 'docker login -u nkarwapanitech -p $docker_password'
-				  sh 'docker push nkarwapanitech/sprint-boot-app:$Docker_tag'
+				  sh 'docker login -u simplice1608 -p $docker_password'
+				  sh 'docker push simplice1608/sprint-boot-app:$Docker_tag'
 			}
             }
         }
         stage('Image Scan') {
             steps {
-      	        sh ' trivy image --format template --template "@/usr/local/share/trivy/templates/html.tpl" -o report.html nkarwapanitech/sprint-boot-app:$Docker_tag '
+      	        sh ' trivy image --format template --template "@/usr/local/share/trivy/templates/html.tpl" -o report.html simplice1608@gmail.com/sprint-boot-app:$Docker_tag '
             }
         }
         stage('Upload Scan report to AWS S3') {
             //   steps {
-            //       sh 'aws s3 cp report.html s3://panitech-devsecops-project/'
+            //       sh 'aws s3 cp report.html s3://project-2/'
             //   }
             steps {
               withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                 sh '''
-                  aws s3 cp report.html s3://panitech-devsecops-project/
+                  aws s3 cp report.html s3://project-2/
                    '''
         }
          }
@@ -89,7 +89,7 @@ pipeline {
        }
 
         stage ('Prod pre-request') {
-            agent { label 'node01' }
+            agent { label 'node1' }
 			steps{
 			 	script{
 				    sh '''final_tag=$(echo $Docker_tag | tr -d ' ')
@@ -100,7 +100,7 @@ pipeline {
 			}
         }
         stage('Deploy to k8s') {
-            agent { label 'node01' }
+            agent { label 'node1' }
               steps {
                 script{
                     kubernetesDeploy configs: 'spring-boot-deployment.yaml', kubeconfigId: 'kubernetes'
