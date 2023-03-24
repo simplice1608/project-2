@@ -62,7 +62,7 @@ pipeline {
         }
         stage('Image Scan') {
             steps {
-      	        sh ' trivy image --format template --template "@/usr/local/share/trivy/templates/html.tpl" -o report.html simplice1608@gmail.com/sprint-boot-app:$Docker_tag '
+      	        sh ' trivy image --format template --template "@/usr/local/share/trivy/templates/html.tpl" -o report.html simplice1608/sprint-boot-app:$Docker_tag '
             }
         }
         stage('Upload Scan report to AWS S3') {
@@ -72,7 +72,7 @@ pipeline {
             steps {
               withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                 sh '''
-                  aws s3 cp report.html s3://project-2/
+                  aws s3 cp report.html s3://pipeline- project-2/
                    '''
         }
          }
