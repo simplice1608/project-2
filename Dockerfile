@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY mvnw .
 COPY .mvn /app/.mvn
-COPY .mvn .mvn
+
 COPY pom.xml .
 COPY src src
 
