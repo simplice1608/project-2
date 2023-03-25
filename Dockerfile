@@ -1,10 +1,11 @@
 FROM adoptopenjdk/openjdk11:alpine-slim as build
 WORKDIR /app
 
-# Set the working directory to /app
+
 WORKDIR /app
 
 COPY mvnw .
+COPY .mvn /app/.mvn
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
@@ -16,7 +17,7 @@ FROM adoptopenjdk/openjdk11:alpine-slim
 VOLUME /tmp
 RUN addgroup --system javauser && adduser -S -s /bin/false -G javauser javauser
 
-# Set the working directory to /app
+
 WORKDIR /app
 
 COPY --from=build /app/app.jar .
