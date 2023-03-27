@@ -4,7 +4,7 @@ WORKDIR /app
 
 WORKDIR /app
 
-COPY mvn .
+COPY .mvn .
 COPY .mvn /app/.mvn
 
 COPY pom.xml .
